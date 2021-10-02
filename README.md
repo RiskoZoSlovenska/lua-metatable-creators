@@ -4,7 +4,10 @@ Metatable Creators is a lightweight, brutally simple library for creating metata
 
 # Installation
 
-Coming to lit (and maybe Luarocks) soon.
+Meta Creators can be installed from [lit](https://luvit.io/lit.html) using
+```
+lit install RiskoZoSlovenska/meta-creators
+```
 
 Once installed, it can be required using
 ```lua

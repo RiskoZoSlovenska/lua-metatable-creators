@@ -229,7 +229,7 @@ readOnly[2] = 4 -- error: cannot write to read-only table
 ```
 
 ## Proxied Tables
-Some metatable effects require proxies, such as read-only tables (since to invoke the `__index` and `__newindex` metamethods, the queried index has to be `nil`). Meta Creators supports this via the `useProxy` parameter provided by the `Creator()` constructor. When it is set to a truthy value, `Creator:create()` creates two tables: a "real" table using any `base`s, and an empty proxy table. The proxy table has its metatable set and is returned.
+Some metatable effects require proxies, such as read-only tables (since to invoke the `__index` and `__newindex` metamethods, the queried index has to be `nil`). Meta Creators supports this via the `useProxy` parameter provided by the `Creator()` constructor. When it is set to a truthy value, `Creator:create()` creates two tables: a "real" table just like it does normally, and an empty proxy table. The proxy table has its metatable set and is returned, while the "real" table is stored behind the scenes.
 
 To facilitate writing metamethods for proxy tables, the `Proxied()` constructor exists. It is similar to `Creator()`, except:
 * `useProxy` is `true`
@@ -238,10 +238,10 @@ To facilitate writing metamethods for proxy tables, the `Proxied()` constructor 
 To give an example:
 ```lua
 local readOnly = ReadOnly():create({1, 2, 3})
--- readOnly is now a proxy table ({}), while the real table ({1, 2, 3}) is hidden behind the scenes
+-- readOnly is now a proxy table ({}), while the real table ({1, 2, 3}) is hidden
 
 
--- This is the __index metamethod used by ReadOnly()
+-- This is the __index metamethod that ReadOnly() passed to Proxied()
 __index = function(tbl, proxy, key)
 	-- tbl is the real, hidden table ({1, 2, 3}) and proxy is the same table as in the readOnly variable ({})
 	return tbl[key]

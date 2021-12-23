@@ -9,6 +9,8 @@ Meta Creators can be installed from [lit](https://luvit.io/lit.html) using
 lit install RiskoZoSlovenska/meta-creators
 ```
 
+Coming to [LuaRocks](https://luarocks.org/) soon™.
+
 Once installed, it can be required using
 ```lua
 local meta = require("meta-creators")

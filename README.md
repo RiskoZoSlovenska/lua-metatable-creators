@@ -64,6 +64,8 @@ This library is based around `Creator` objects. These objects are extremely simp
 |base|`table` or `nil`|An optional table structure template  that this `Creator` will use for creating new objects|
 |useProxy|`boolean`|Whether this creator operates using proxies. See [Proxied Tables](#proxied-tables).
 
+***Note:** The identities of the tables in the `meta` and `base` properties are undefined - that is, they may be the same tables that were passed to constructors and/or they may be shared across multiple Creators. Thus, 1) don't modify tables after you've passed them to constructors and 2) don't modify the properties of existing Creators. The former limitation will likely be lifted sometime in the future.*
+
 ### Methods
 
 ---

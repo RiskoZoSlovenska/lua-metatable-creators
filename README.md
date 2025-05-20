@@ -55,7 +55,7 @@ local someTable = creator:create()
 
 ## `Creator` Objects
 
-This library is based around `Creator` objects. These objects are extremely simple:
+This library is based around immutable `Creator` objects. These objects are extremely simple:
 
 ### Properties
 |Name|Type            |Description|
@@ -64,7 +64,7 @@ This library is based around `Creator` objects. These objects are extremely simp
 |base|`table` or `nil`|An optional table structure template  that this `Creator` will use for creating new objects|
 |useProxy|`boolean`|Whether this creator operates using proxies. See [Proxied Tables](#proxied-tables).
 
-***Note:** The identities of the tables in the `meta` and `base` properties are undefined - that is, they may be the same tables that were passed to constructors and/or they may be shared across multiple Creators. Thus, 1) don't modify tables after you've passed them to constructors and 2) don't modify the properties of existing Creators. The former limitation will likely be lifted sometime in the future.*
+Do not mutate a `Creator`'s properties in any way as they may be shared across multiple objects.
 
 ### Methods
 
@@ -109,6 +109,8 @@ creator1:combine(creator2)
 ```
 
 ## Constructors
+
+***Note:** All `Creator` constructors create a deep copy of any meta or base tables passed to them.*
 
 `Creator` objects are created using constructors provided by the module. These are:
 

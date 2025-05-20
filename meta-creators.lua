@@ -62,9 +62,9 @@ end
 
 local Creator = createConstructor(function(meta, base, useProxy)
 	return {
-		meta = meta,
-		base = base,
-		useProxy = useProxy or false,
+		meta = copy(meta),
+		base = copy(base),
+		useProxy = (not not useProxy),
 	}
 end)
 
@@ -128,7 +128,7 @@ local ProxiedCreator = createConstructor(function(meta, base)
 				return value(proxies[proxy], proxy, ...)
 			end
 		else
-			newMeta[key] = value
+			newMeta[key] = value -- Will be deepcopied by the Creator constructor below
 		end
 	end
 

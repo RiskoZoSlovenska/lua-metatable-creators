@@ -1,6 +1,6 @@
 --[[lit-meta
 	name = "RiskoZoSlovenska/meta-creators"
-	version = "1.0.0"
+	version = "1.0.1"
 	homepage = "https://github.com/RiskoZoSlovenska/lua-metatable-creators"
 	description = "A simple, lightweight Lua library for easily building metatables."
 	tags = {"metatable", "create"}

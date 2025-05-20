@@ -5,14 +5,17 @@ Metatable Creators is a simple, lightweight library for creating metatables in L
 
 ## Installation
 
-Meta Creators can be installed from [lit](https://luvit.io/lit.html) using
+Meta Creators can be installed from [LuaRocks](https://luarocks.org):
+```
+luarocks install meta-creators
+```
+
+Or from [lit](https://luvit.io/lit.html):
 ```
 lit install RiskoZoSlovenska/meta-creators
 ```
 
-Coming to [LuaRocks](https://luarocks.org/) soon™.
-
-Once installed, it can be required using
+Once installed, it can be required as such:
 ```lua
 local meta = require("meta-creators")
 ```

@@ -8,14 +8,13 @@
 	author = "RiskoZoSlovenska"
 ]]
 
-
 local pairs = pairs
 local type = type
 local setmetatable = setmetatable
 local select = select
 
 
-
+-- MARK: Utils
 local function set(tbl, key, value)
 	tbl[key] = value
 	return value
@@ -46,10 +45,9 @@ local function copy(tbl)
 end
 
 
-
+-- MARK: Basic constructors
 local objectMeta = {}
 objectMeta.__index = objectMeta
-
 
 
 local function createConstructor(constructor)
@@ -57,7 +55,6 @@ local function createConstructor(constructor)
 		return setmetatable(constructor(...), objectMeta)
 	end
 end
-
 
 
 local Creator = createConstructor(function(meta, base, useProxy)
@@ -94,7 +91,7 @@ local function getWeakMeta(mode)
 
 	local meta = WEAK_MEM[mode]
 	if not meta then
-		meta = {__mode = mode}
+		meta = { __mode = mode }
 		WEAK_MEM[mode] = meta
 	end
 
@@ -105,19 +102,20 @@ local WeakCreator = createConstructor(function(mode)
 end)
 
 
-local AUTO_0_META = {__index = function() return 0 end}
+local AUTO_0_META = { __index = function() return 0 end }
 local Auto0Creator = createConstructor(function()
 	return Creator(AUTO_0_META)
 end)
 
 
 local Auto2DCreator = createConstructor(function(sub)
-	return Creator({__index = function(tbl, key)
+	return Creator({ __index = function(tbl, key)
 		return set(tbl, key, sub and sub:create() or {})
-	end})
+	end })
 end)
 
 
+-- MARK: Proxy constructors
 local proxies = setmetatable({}, getWeakMeta("k"))
 local ProxiedCreator = createConstructor(function(meta, base)
 	local newMeta = {}
@@ -140,20 +138,20 @@ local READ_ONLY_META = {
 	__index = function(tbl, _, key)
 		return tbl[key]
 	end,
-	__newindex = function()
+	__newindex = function(_, _, _, _)
 		error("cannot write to read-only table")
 	end,
-	__len = function(tbl)
+	__len = function(tbl, _)
 		return #tbl
 	end,
-	__pairs = function(tbl)
+	__pairs = function(tbl, _)
 		local k, v
 		return function()
 			k, v = next(tbl, k)
 			return k, v
 		end
 	end,
-	__ipairs = function(tbl)
+	__ipairs = function(tbl, _)
 		local i = 0
 		return function()
 			i = i + 1
@@ -167,7 +165,7 @@ local ReadOnlyCreator = createConstructor(function()
 end)
 
 
-
+-- MARK: Object methods
 function objectMeta:create(base)
 	local new = base or (self.base and copy(self.base)) or {}
 
@@ -182,7 +180,6 @@ end
 
 objectMeta.combine = CombinedCreator -- We can use this directly
 objectMeta.__concat = objectMeta.combine
-
 
 
 return {
@@ -203,12 +200,10 @@ return {
 	Auto2D = Auto2DCreator,
 	A2D    = Auto2DCreator,
 
-
 	Proxied = ProxiedCreator,
 
 	ReadOnly = ReadOnlyCreator,
 	RO = ReadOnlyCreator,
-
 
 	createConstructor = createConstructor,
 }

@@ -1,8 +1,9 @@
 # Metatable Creators
 
-Metatable Creators is a lightweight, brutally simple library for creating metatables in Lua.
+Metatable Creators is a simple, lightweight library for creating metatables in Lua.
 
-# Installation
+
+## Installation
 
 Meta Creators can be installed from [lit](https://luvit.io/lit.html) using
 ```
@@ -16,12 +17,13 @@ Once installed, it can be required using
 local meta = require("meta-creators")
 ```
 
-# Example
+
+## Example
 
 The library was born from the desire to avoid this kind of code:
 ```lua
 -- Very specific use case which requires an auto-2D table, where both the main table itself and any subtables are weak-keyed
-local WEAK_META = {__mode = "k"}
+local WEAK_META = { __mode = "k" }
 local MAIN_META = {
 	__index = function(tbl, key)
 		local new = setmetatable({}, WEAK_META)
@@ -43,6 +45,7 @@ local creator = meta.Combined(
 
 local someTable = creator:create()
 ```
+
 Using some convenience shortcuts, it can be compacted even further:
 ```lua
 local creator = meta.A2D(meta.W("k")) .. meta.W("k")
@@ -51,29 +54,28 @@ local someTable = creator:create()
 ```
 
 
-# Docs
+## Docs
 
-## `Creator` Objects
+### `Creator` Objects
 
 This library is based around immutable `Creator` objects. These objects are extremely simple:
 
-### Properties
+#### Properties
 |Name|Type            |Description|
 |:--:|:--------------:|-----------|
 |meta|`table`         |The metatable that this `Creator` will use when creating new objects|
 |base|`table` or `nil`|An optional table structure template  that this `Creator` will use for creating new objects|
-|useProxy|`boolean`|Whether this creator operates using proxies. See [Proxied Tables](#proxied-tables).
+|useProxy|`boolean`   |Whether this creator operates using proxies. See [Proxied Tables](#proxied-tables).
 
 Do not mutate a `Creator`'s properties in any way as they may be shared across multiple objects.
 
-### Methods
+#### Methods
 
----
-#### `:create(base)`
+##### `:create(base)`
 
 |Parameter|Type   |Optional|
 |:-------:|:-----:|:------:|
-|base     |`table`|✔️| 
+|base     |`table`|✔️|
 
 
 If the `base` argument is non-`nil`, the creator's `meta` field will be set as its metatable and be it will be returned. Otherwise, if the creator's `base` property is not `nil`, it will be deepcopied, the `meta` field set as its metatable and returned. Otherwise, returns a new empty table with the `meta` field set as its metatable.
@@ -81,7 +83,7 @@ If the `base` argument is non-`nil`, the creator's `meta` field will be set as i
 **Returns:** `table`
 
 ---
-#### `:combine(...)`
+##### `:combine(...)`
 
 |Parameter|Type     |
 |:-------:|:-------:|
@@ -98,7 +100,7 @@ Combined(creator1, creator2, creator3)
 ```
 
 ---
-#### `:__concat(...)`
+##### `:__concat(...)`
 
 Overload for the `..` concat operator. Behaves identically to `:combine()`.
 
@@ -108,14 +110,14 @@ creator1 .. creator2
 creator1:combine(creator2)
 ```
 
-## Constructors
+
+### Constructors
 
 ***Note:** All `Creator` constructors create a deep copy of any meta or base tables passed to them.*
 
 `Creator` objects are created using constructors provided by the module. These are:
 
---- 
-### `Creator(meta, base, isProxied)`
+#### `Creator(meta, base, isProxied)`
 
 ***Aliases:** None*
 
@@ -128,7 +130,7 @@ creator1:combine(creator2)
 Creates a new Creator with the provided `meta` and `base` fields. This is the most fundamental constructor, and is used by all others. By default, `base` is `nil` and `useProxy` is `false`.
 
 ---
-### `Base(base)`
+#### `Base(base)`
 
 ***Aliases:** `B`*
 
@@ -139,7 +141,7 @@ Creates a new Creator with the provided `meta` and `base` fields. This is the mo
 Creates a new `Creator` with an empty table `meta` and a `base`.
 
 ---
-### `Combined(...)`
+#### `Combined(...)`
 
 ***Aliases:** `C`*
 
@@ -151,19 +153,19 @@ Creates a new `Creator` by merging the `meta`s of the provided creators (newer f
 
 ```lua
 Combined(
-	Creator({__index = func1, __mode = "k"}),
+	Creator({ __index = func1, __mode = "k" }),
 	Creator({}, {123, 456})
-	Creator({__index = func2}, {1, 2, 3}),
+	Creator({ __index = func2 }, {1, 2, 3}),
 )
 -- is the equivalent of
 Creator(
-	{__index = func2, __mode = "k"},
+	{ __index = func2, __mode = "k" },
 	{1, 2, 3}
 )
 ```
 
 ---
-### `Weak(mode)`
+#### `Weak(mode)`
 
 ***Aliases:** `W`*
 
@@ -174,7 +176,7 @@ Creator(
 Creates a new `Creator` with a metatable that has the `__mode` method set to the provided `mode`.
 
 ---
-### `Auto0()`
+#### `Auto0()`
 
 ***Aliases:** `A0`*
 
@@ -189,7 +191,7 @@ freq.hi = freq.hi + 1 -- freq is now {["hi"] = 1}
 ```
 
 ---
-### `Auto2D(sub)`
+#### `Auto2D(sub)`
 
 ***Aliases:** `A2D`*
 
@@ -208,7 +210,7 @@ table.insert(twoD[1], "hello") -- twoD is now {{"hello"}, {}}
 ```
 
 ---
-### `Proxied(meta, base)`
+#### `Proxied(meta, base)`
 
 ***Aliases:** None*
 
@@ -220,7 +222,7 @@ table.insert(twoD[1], "hello") -- twoD is now {{"hello"}, {}}
 Creates a new `Creator` with `isProxied` set to true. The metatable passed to the new creator is modified so that any functions are called with an extra leading argument, that being the real table (not the proxy). See [Proxied Tables](#proxied-tables).
 
 ---
-### `ReadOnly()`
+#### `ReadOnly()`
 
 ***Aliases:** `RO`*
 
@@ -234,7 +236,8 @@ print(#readOnly) -- 3
 readOnly[2] = 4 -- error: cannot write to read-only table
 ```
 
-## Proxied Tables
+
+### Proxied Tables
 Some metatable effects require proxies, such as read-only tables (since to invoke the `__index` and `__newindex` metamethods, the queried index has to be `nil`). Meta Creators supports this via the `useProxy` parameter provided by the `Creator()` constructor. When it is set to a truthy value, `Creator:create()` creates two tables: a "real" table just like it does normally, and an empty proxy table. The proxy table has its metatable set and is returned, while the "real" table is stored behind the scenes.
 
 To facilitate writing metamethods for proxy tables, the `Proxied()` constructor exists. It is similar to `Creator()`, except:
@@ -255,21 +258,13 @@ end
 ```
 
 
-## Custom Constructors
+### Custom Constructors
 Sometimes, the default constructors provided by Meta Creators won't be sufficient for your exact use case, but creating your own isn't difficult. It can be done using the provided `createConstructor(constructor)` function. The only argument `constructor` is a function what will be called when then resulting constructor is called; it may accept any parameters, and should return a table (the resulting `Creator`). Note that the resulting `Creator` will have its metatable set *after* it's returned.
 
 As an example, the `Auto0()` constructor is defined as:
 ```lua
-local AUTO_0_META = {__index = function() return 0 end}
+local AUTO_0_META = { __index = function() return 0 end }
 local Auto0 = createConstructor(function()
 	return Creator(AUTO_0_META)
 end)
 ```
-
-
-
-
-
-
-
-

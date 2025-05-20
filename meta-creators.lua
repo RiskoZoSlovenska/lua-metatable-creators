@@ -155,7 +155,8 @@ local READ_ONLY_META = {
 		local i = 0
 		return function()
 			i = i + 1
-			if i <= #tbl then return i, tbl[i] end
+			local v = tbl[i]
+			return (v ~= nil and i or nil), v
 		end
 	end,
 }

@@ -122,11 +122,13 @@ local proxies = setmetatable({}, getWeakMeta("k"))
 local ProxiedCreator = createConstructor(function(meta, base)
 	local newMeta = {}
 
-	for key, func in pairs(meta) do
-		if type(func) == "function" then
+	for key, value in pairs(meta) do
+		if type(value) == "function" then
 			newMeta[key] = function(proxy, ...)
-				return func(proxies[proxy], proxy, ...)
+				return value(proxies[proxy], proxy, ...)
 			end
+		else
+			newMeta[key] = value
 		end
 	end
 
